@@ -4,11 +4,13 @@ import Landing from './pages/Landing';
 import Login from './pages/Login';
 import StudentDashboard from './pages/StudentDashboard';
 import TeacherDashboard from './pages/TeacherDashboard';
-import AdminDashboard from './pages/AdminDashboard';
+import AdminDashboard from './pages/AdminDashboard'; // No need for '.jsx' extension in modern React projects
 
-function App() {
+
+
+export default function App() {
   return (
-    <div className="min-h-screen bg-gray-50 text-center p-10">
+    <div className="min-h-screen bg-gray-50">
       <h1 className="text-3xl font-bold text-blue-600">Hello LMS App 🚀</h1>
       <Routes>
         <Route path="/" element={<Landing />} />
@@ -20,5 +22,3 @@ function App() {
     </div>
   );
 }
-
-export default App;
