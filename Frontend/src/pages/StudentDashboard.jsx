@@ -1,87 +1,114 @@
-import React, { useEffect, useState } from "react";
-import API from "../api/api";
+import React from "react";
 
-export default function StudentDashboard() {
-  const [me, setMe] = useState(null);
-  const [courses, setCourses] = useState([]);
-  const [certs, setCerts] = useState([]);
-
-  useEffect(() => {
-    const fetch = async () => {
-      try {
-        const c = await API.get("/courses");
-        setCourses(c.data);
-        const res = await API.get("/certificates/my");
-        setCerts(res.data);
-      } catch (err) {
-        console.error(err);
-      }
-    };
-    fetch();
-  }, []);
+const StudentDashboard = () => {
+  const student = {
+    name: "Bhanu Kundhani",
+    email: "bhanuprakashkundhani1213@gmail.com",
+    phone: "+91-9000890519",
+    learningHours: 12,
+    badges: 5,
+    trainings: 3,
+    quizzes: 2,
+  };
 
   return (
-    <div className="min-h-screen bg-gradient-to-b from-indigo-50 to-purple-50 p-6">
-      <h2 className="text-3xl md:text-4xl font-bold text-indigo-700 mb-8 text-center">
-        Student Dashboard
-      </h2>
-
-      {/* Enrolled Courses */}
-      <section className="mb-10">
-        <h3 className="text-2xl font-semibold text-gray-700 mb-4">Enrolled Courses</h3>
-        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
-          {courses.filter((c) => false).length === 0 ? (
-            <div className="text-center text-gray-500 col-span-full py-10 bg-white rounded-2xl shadow-md">
-              Your enrolled courses will appear here (seed backend for demo).
-            </div>
-          ) : (
-            courses.map((course) => (
-              <div
-                key={course._id}
-                className="bg-white p-6 rounded-2xl shadow-lg hover:shadow-2xl transform hover:-translate-y-1 transition-all duration-300"
-              >
-                <div className="font-bold text-lg text-indigo-600">{course.title}</div>
-                <p className="text-gray-600 mt-2">{course.description || "No description"}</p>
-                <div className="mt-4 text-sm text-gray-500">Instructor: {course.instructor?.name || "TBA"}</div>
-              </div>
-            ))
-          )}
+    <div className="min-h-screen bg-gray-100 p-6">
+      {/* Profile Section */}
+      <div className="relative bg-gradient-to-r from-indigo-600 to-blue-500 rounded-2xl p-6 mb-8">
+        <div className="absolute top-4 right-4 cursor-pointer text-white">
+          ✎ {/* Edit background icon */}
         </div>
-      </section>
-
-      {/* Certificates */}
-      <section>
-        <h3 className="text-2xl font-semibold text-gray-700 mb-4">Certificates</h3>
-        <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
-          {certs.length === 0 ? (
-            <div className="text-center text-gray-500 py-10 bg-white rounded-2xl shadow-md col-span-full">
-              No certificates yet.
+        <div className="flex items-center space-x-6">
+          <div className="relative">
+            <img
+              src="https://via.placeholder.com/100"
+              alt="profile"
+              className="w-24 h-24 rounded-full border-4 border-white"
+            />
+            <div className="absolute bottom-0 right-0 bg-white rounded-full p-1 cursor-pointer">
+              📷
             </div>
-          ) : (
-            certs.map((cert) => (
-              <div
-                key={cert._id}
-                className="flex justify-between items-center p-4 bg-white rounded-2xl shadow-lg hover:shadow-2xl transition duration-300"
-              >
-                <div>
-                  <div className="font-semibold text-indigo-600">{cert.course?.title || "Course"}</div>
-                  <div className="text-sm text-gray-500">
-                    Issued: {new Date(cert.issuedAt).toLocaleDateString()}
-                  </div>
-                </div>
-                <a
-                  href={`${import.meta.env.VITE_API_URL || "http://localhost:5000"}/api/certificates/download/${cert.fileUrl}`}
-                  target="_blank"
-                  rel="noreferrer"
-                  className="px-4 py-2 bg-green-600 text-white rounded-lg shadow hover:bg-green-700 transition"
-                >
-                  Download
-                </a>
-              </div>
-            ))
-          )}
+          </div>
+          <div className="text-white">
+            <h1 className="text-2xl font-bold">{student.name}</h1>
+            <p className="text-sm">{student.email}</p>
+            <p className="text-sm">{student.phone}</p>
+            <button className="mt-2 px-4 py-1 bg-white text-indigo-600 font-semibold rounded hover:bg-gray-100 transition">
+              Edit Profile
+            </button>
+          </div>
         </div>
-      </section>
+      </div>
+
+      {/* Stats Cards */}
+      <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6 mb-8">
+        <div className="bg-white rounded-2xl p-6 shadow hover:shadow-lg transition cursor-pointer">
+          <h2 className="text-gray-500 text-sm">Learning Hours</h2>
+          <p className="text-2xl font-bold text-indigo-600">{student.learningHours} hrs</p>
+        </div>
+        <div className="bg-white rounded-2xl p-6 shadow hover:shadow-lg transition cursor-pointer">
+          <h2 className="text-gray-500 text-sm">Badges</h2>
+          <p className="text-2xl font-bold text-yellow-500">{student.badges}</p>
+        </div>
+        <div className="bg-white rounded-2xl p-6 shadow hover:shadow-lg transition cursor-pointer">
+          <h2 className="text-gray-500 text-sm">Assigned Trainings</h2>
+          <p className="text-2xl font-bold text-green-500">{student.trainings}</p>
+        </div>
+        <div className="bg-white rounded-2xl p-6 shadow hover:shadow-lg transition cursor-pointer">
+          <h2 className="text-gray-500 text-sm">Quizzes</h2>
+          <p className="text-2xl font-bold text-pink-500">{student.quizzes}</p>
+        </div>
+      </div>
+
+      {/* Sections */}
+      <div className="grid grid-cols-1 lg:grid-cols-3 gap-6">
+        {/* Assigned Trainings */}
+        <div className="bg-white rounded-2xl shadow p-6">
+          <h2 className="font-bold text-lg mb-4">Assigned Trainings</h2>
+          <ul className="space-y-2">
+            <li className="p-3 bg-gray-50 rounded hover:bg-gray-100 transition cursor-pointer">
+              React Basics
+            </li>
+            <li className="p-3 bg-gray-50 rounded hover:bg-gray-100 transition cursor-pointer">
+              Advanced JavaScript
+            </li>
+            <li className="p-3 bg-gray-50 rounded hover:bg-gray-100 transition cursor-pointer">
+              Tailwind CSS Mastery
+            </li>
+          </ul>
+        </div>
+
+        {/* Quizzes */}
+        <div className="bg-white rounded-2xl shadow p-6">
+          <h2 className="font-bold text-lg mb-4">Upcoming Quizzes</h2>
+          <ul className="space-y-2">
+            <li className="p-3 bg-gray-50 rounded hover:bg-gray-100 transition cursor-pointer">
+              JS Fundamentals Quiz
+            </li>
+            <li className="p-3 bg-gray-50 rounded hover:bg-gray-100 transition cursor-pointer">
+              React Hooks Quiz
+            </li>
+          </ul>
+        </div>
+
+        {/* Badges / Achievements */}
+        <div className="bg-white rounded-2xl shadow p-6">
+          <h2 className="font-bold text-lg mb-4">Badges</h2>
+          <div className="flex flex-wrap gap-3">
+            <span className="bg-yellow-100 text-yellow-800 px-3 py-1 rounded-full text-sm font-semibold">
+              JS Beginner
+            </span>
+            <span className="bg-green-100 text-green-800 px-3 py-1 rounded-full text-sm font-semibold">
+              React Pro
+            </span>
+            <span className="bg-indigo-100 text-indigo-800 px-3 py-1 rounded-full text-sm font-semibold">
+              Tailwind Expert
+            </span>
+          </div>
+        </div>
+      </div>
     </div>
   );
-}
+};
+
+export default StudentDashboard;
