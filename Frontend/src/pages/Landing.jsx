@@ -25,25 +25,26 @@ export default function Landing() {
         </p>
 
         {/* Role Cards */}
-        <section className="grid grid-cols-1 md:grid-cols-3 gap-8 w-full max-w-5xl">
-          {/* Student Card */}
-          <div className="p-6 bg-white rounded-2xl shadow-lg transform hover:scale-105 transition duration-300">
-            <h3 className="text-xl font-bold text-indigo-600 mb-2">Students</h3>
-            <p className="text-gray-600">View enrolled courses, download certificates, and track progress.</p>
-          </div>
+        <section className="grid grid-cols-1 md:grid-cols-3 gap-8 w-full max-w-5xl mt-10">
+        {/* Student Card */}
+         <Link to="/login/student" className="p-6 bg-white rounded-2xl shadow-lg transform hover:scale-105 transition duration-300 block">
+           <h3 className="text-xl font-bold text-indigo-600 mb-2">Students</h3>
+          <p className="text-gray-600">View enrolled courses, download certificates.</p>
+         </Link>
 
-          {/* Teacher Card */}
-          <div className="p-6 bg-white rounded-2xl shadow-lg transform hover:scale-105 transition duration-300">
-            <h3 className="text-xl font-bold text-green-600 mb-2">Teachers</h3>
-            <p className="text-gray-600">Manage students, upload assignments, and track course progress.</p>
-          </div>
+         {/* Teacher Card */}
+         <Link to="/login/teacher" className="p-6 bg-white rounded-2xl shadow-lg transform hover:scale-105 transition duration-300 block">
+          <h3 className="text-xl font-bold text-green-600 mb-2">Teachers</h3>
+          <p className="text-gray-600">Manage students, upload assignments, track progress.</p>
+         </Link>
 
           {/* Admin Card */}
-          <div className="p-6 bg-white rounded-2xl shadow-lg transform hover:scale-105 transition duration-300">
-            <h3 className="text-xl font-bold text-red-600 mb-2">Admins</h3>
-            <p className="text-gray-600">Assign teachers, upload offer letters, issue certificates, and manage users.</p>
-          </div>
+         <Link to="/login/admin" className="p-6 bg-white rounded-2xl shadow-lg transform hover:scale-105 transition duration-300 block">
+          <h3 className="text-xl font-bold text-red-600 mb-2">Admins</h3>
+          <p className="text-gray-600">Admin login is restricted to authorized personnel.</p>
+         </Link>
         </section>
+
       </main>
 
       {/* Footer */}
