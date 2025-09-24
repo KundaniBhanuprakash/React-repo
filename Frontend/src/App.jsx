@@ -4,28 +4,33 @@ import { BrowserRouter as Router, Routes, Route, Navigate } from "react-router-d
 import Landing from "./pages/Landing";
 import RoleSelection from "./pages/RoleSelection";
 import Login from "./pages/Login";
+import StudentLogin from "./pages/StudentLogin";
+import TeacherLogin from "./pages/TeacherLogin";
 import StudentDashboard from "./pages/StudentDashboard";
 import TeacherDashboard from "./pages/TeacherDashboard";
 import AdminDashboard from "./pages/AdminDashboard";
-import StudentLogin from "./pages/StudentLogin";
-import TeacherLogin from "./pages/TeacherLogin";
+import PrivateRoute from "./components/PrivateRoute";
+import Logout from "./components/Logout";
 
 export default function App() {
   const [user, setUser] = useState(null);
 
-  const handleLogin = ({ email, role }) => {
-    setUser({ email, role });
-  };
+  // Login handler: updates user state with email and role
+  const handleLogin = ({ email, role }) => setUser({ email, role });
+
+  // Logout handler: clears user state
+  const handleLogout = () => setUser(null);
 
   return (
     <Router>
       <Routes>
-        {/* Landing page */}
+        {/* Landing Page */}
         <Route path="/" element={<Landing />} />
-        <Route path="/select-role" element={<RoleSelection />} />
-        <Route path="/login/:role" element={<Login />} />
 
-        {/* Login pages */}
+        {/* Role Selection Page */}
+        <Route path="/select-role" element={<RoleSelection />} />
+
+        {/* Generic Login: redirects to role-based dashboard if already logged in */}
         <Route
           path="/login"
           element={
@@ -36,6 +41,8 @@ export default function App() {
             )
           }
         />
+
+        {/* Student Login */}
         <Route
           path="/login/student"
           element={
@@ -46,6 +53,8 @@ export default function App() {
             )
           }
         />
+
+        {/* Teacher Login */}
         <Route
           path="/login/teacher"
           element={
@@ -57,39 +66,42 @@ export default function App() {
           }
         />
 
-        {/* Dashboards (protected) */}
+        {/* Student Dashboard (Protected) */}
         <Route
-          path="/dashboard/student"
-          element={
-            user?.role === "student" ? (
-              <StudentDashboard />
-            ) : (
-              <Navigate to="/login/student" replace />
-            )
-          }
+            path="/dashboard/student"
+             element={
+        <PrivateRoute
+            user={user}
+          role="student"
+           component={() => <StudentDashboard onLogout={handleLogout} />}
+          />
+       }
         />
 
         <Route
-          path="/dashboard/teacher"
-          element={
-            user?.role === "teacher" ? (
-              <TeacherDashboard />
-            ) : (
-              <Navigate to="/login/teacher" replace />
-            )
-          }
+            path="/dashboard/teacher"
+            element={
+        <PrivateRoute
+            user={user}
+            role="teacher"
+           component={() => <TeacherDashboard onLogout={handleLogout} />}
+          />
+       }
         />
 
         <Route
-          path="/dashboard/admin"
-          element={
-            user?.role === "admin" && user?.email === "bhanuprakashmdpl@gmail.com" ? (
-              <AdminDashboard />
-            ) : (
-              <Navigate to="/login" replace />
-            )
-          }
+            path="/dashboard/admin"
+            element={
+        <PrivateRoute
+            user={user}
+           role="admin"
+           component={() => <AdminDashboard onLogout={handleLogout} />}
+         />
+       }
         />
+
+        {/* Catch-all Redirect */}
+        <Route path="*" element={<Navigate to="/" replace />} />
       </Routes>
     </Router>
   );

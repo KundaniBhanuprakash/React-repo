@@ -1,70 +1,61 @@
-import React, { useState } from "react";
+// src/pages/Login.jsx
+import { useParams, useNavigate } from "react-router-dom";
+import { useState } from "react";
+import api from "../api/api";
 
 export default function Login({ onLogin }) {
+  const { role } = useParams(); // "student", "teacher", "admin"
+  const navigate = useNavigate();
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
-  const [role, setRole] = useState("student");
-  const [error, setError] = useState("");
 
-  const handleSubmit = (e) => {
+  const handleLogin = async (e) => {
     e.preventDefault();
-
-    if (!email || !password) {
-      setError("Please fill in all fields");
-      return;
+    try {
+      // Make API call to backend login endpoint
+      const res = await api.post("/auth/login", { email, password });
+      
+      if (res.data.success) {
+        onLogin({ email: res.data.email, role: res.data.role });
+        navigate(`/dashboard/${res.data.role}`); // Role-based redirection
+      } else {
+        alert("Login failed: " + res.data.message);
+      }
+    } catch (err) {
+      console.error(err);
+      alert("Login error");
     }
-
-    if (role === "admin" && email !== "bhanuprakashmdpl@gmail.com") {
-      setError("Unauthorized admin login");
-      return;
-    }
-
-    // ✅ call parent
-    onLogin({ email, role });
   };
 
   return (
-    <div className="flex items-center justify-center min-h-screen bg-gray-100">
-      <div className="w-full max-w-md bg-white shadow rounded-xl p-6">
-        <h1 className="text-2xl font-bold mb-4">Login</h1>
-
-        {error && <p className="text-red-600 text-sm mb-2">{error}</p>}
-
-        <form onSubmit={handleSubmit} className="space-y-3">
-          <input
-            type="email"
-            placeholder="Email"
-            className="w-full border rounded p-2"
-            value={email}
-            onChange={(e) => setEmail(e.target.value)}
-          />
-
-          <input
-            type="password"
-            placeholder="Password"
-            className="w-full border rounded p-2"
-            value={password}
-            onChange={(e) => setPassword(e.target.value)}
-          />
-
-          <select
-            className="w-full border rounded p-2"
-            value={role}
-            onChange={(e) => setRole(e.target.value)}
-          >
-            <option value="student">Student</option>
-            <option value="teacher">Teacher</option>
-            <option value="admin">Admin</option>
-          </select>
-
-          <button
-            type="submit"
-            className="w-full bg-blue-600 text-white rounded p-2 font-semibold"
-          >
-            Login
-          </button>
-        </form>
-      </div>
+    <div className="min-h-screen flex items-center justify-center bg-gray-100">
+      <form onSubmit={handleLogin} className="bg-white p-8 rounded shadow-md w-full max-w-md">
+        <h2 className="text-2xl font-bold mb-6 text-center">
+          {role?.charAt(0).toUpperCase() + role?.slice(1)} Login
+        </h2>
+        <input
+          type="email"
+          placeholder="Email"
+          value={email}
+          onChange={(e) => setEmail(e.target.value)}
+          required
+          className="w-full p-2 border rounded mb-4"
+        />
+        <input
+          type="password"
+          placeholder="Password"
+          value={password}
+          onChange={(e) => setPassword(e.target.value)}
+          required
+          className="w-full p-2 border rounded mb-6"
+        />
+        <button
+          type="submit"
+          className="w-full bg-indigo-600 text-white py-2 px-4 rounded hover:bg-indigo-700 transition"
+        >
+          Login
+        </button>
+      </form>
     </div>
   );
 }

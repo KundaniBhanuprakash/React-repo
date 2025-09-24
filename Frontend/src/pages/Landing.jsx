@@ -11,18 +11,10 @@ export default function Landing() {
         <div className="max-w-7xl mx-auto px-6 py-4 flex justify-between items-center">
           <h1 className="text-2xl font-bold text-indigo-600">Mini LMS</h1>
           <ul className="hidden md:flex space-x-8 text-gray-700 font-medium">
-            <li>
-              <a href="#about" className="hover:text-indigo-600">About</a>
-            </li>
-            <li>
-              <a href="#features" className="hover:text-indigo-600">Features</a>
-            </li>
-            <li>
-              <a href="#institute" className="hover:text-indigo-600">Institute</a>
-            </li>
-            <li>
-              <a href="#contact" className="hover:text-indigo-600">Contact</a>
-            </li>
+            <li><a href="#about" className="hover:text-indigo-600">About</a></li>
+            <li><a href="#features" className="hover:text-indigo-600">Features</a></li>
+            <li><a href="#institute" className="hover:text-indigo-600">Institute</a></li>
+            <li><a href="#contact" className="hover:text-indigo-600">Contact</a></li>
           </ul>
           <button
             onClick={() => navigate("/select-role")}
@@ -49,9 +41,7 @@ export default function Landing() {
         <div className="max-w-5xl mx-auto text-center">
           <h3 className="text-2xl font-bold text-gray-800 mb-6">About Us</h3>
           <p className="text-gray-600 leading-relaxed">
-            Mini LMS is a lightweight yet powerful learning management system 
-            built to simplify online education. Our goal is to provide teachers 
-            and students with the best tools to enhance teaching, learning, and collaboration.
+            Mini LMS is a lightweight yet powerful learning management system built to simplify online education.
           </p>
         </div>
       </section>
@@ -59,9 +49,7 @@ export default function Landing() {
       {/* Features Section */}
       <section className="py-16 px-6 bg-gray-50" id="features">
         <div className="max-w-6xl mx-auto">
-          <h3 className="text-2xl font-bold text-center text-gray-800 mb-12">
-            Key Features
-          </h3>
+          <h3 className="text-2xl font-bold text-center text-gray-800 mb-12">Key Features</h3>
           <div className="grid md:grid-cols-3 gap-8 text-center">
             <div className="p-6 bg-white rounded-2xl shadow">
               <h4 className="font-bold text-indigo-600 mb-2">Interactive Courses</h4>
@@ -84,9 +72,7 @@ export default function Landing() {
         <div className="max-w-5xl mx-auto text-center">
           <h3 className="text-2xl font-bold text-gray-800 mb-6">Our Institute</h3>
           <p className="text-gray-600">
-            Partnered with leading educators, Mini LMS brings quality education to 
-            your fingertips. Whether you are a student, teacher, or admin, 
-            our platform provides the flexibility and scalability you need.
+            Partnered with leading educators, Mini LMS brings quality education to your fingertips.
           </p>
         </div>
       </section>
