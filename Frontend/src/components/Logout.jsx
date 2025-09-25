@@ -6,8 +6,8 @@ export default function Logout({ onLogout }) {
   const navigate = useNavigate();
 
   const handleClick = () => {
-    onLogout();          // clear user in App.jsx
-    navigate("/login");  // redirect to login page
+    onLogout();        // clear user from state
+    navigate("/");     // redirect to landing page
   };
 
   return (
