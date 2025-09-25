@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React, { useState, useEffect } from "react";
 import { BrowserRouter as Router, Routes, Route, Navigate } from "react-router-dom";
 
 import Landing from "./pages/Landing";
@@ -9,28 +9,37 @@ import TeacherLogin from "./pages/TeacherLogin";
 import StudentDashboard from "./pages/StudentDashboard";
 import TeacherDashboard from "./pages/TeacherDashboard";
 import AdminDashboard from "./pages/AdminDashboard";
-import PrivateRoute from "./components/PrivateRoute";
-import Logout from "./components/Logout";
 
 export default function App() {
   const [user, setUser] = useState(null);
 
-  // Login handler: updates user state with email and role
-  const handleLogin = ({ email, role }) => setUser({ email, role });
+  // Restore from localStorage
+  useEffect(() => {
+    const storedUser = localStorage.getItem("user");
+    if (storedUser) setUser(JSON.parse(storedUser));
+  }, []);
 
-  // Logout handler: clears user state
-  const handleLogout = () => setUser(null);
+  // Handle login
+  const handleLogin = ({ email, role }) => {
+    const loggedInUser = { email, role };
+    setUser(loggedInUser);
+    localStorage.setItem("user", JSON.stringify(loggedInUser));
+  };
+
+  // Handle logout
+  const handleLogout = () => {
+    setUser(null);
+    localStorage.removeItem("user");
+  };
 
   return (
     <Router>
       <Routes>
-        {/* Landing Page */}
+        {/* Landing + Role select */}
         <Route path="/" element={<Landing />} />
-
-        {/* Role Selection Page */}
         <Route path="/select-role" element={<RoleSelection />} />
 
-        {/* Generic Login: redirects to role-based dashboard if already logged in */}
+        {/* Generic Login (not used much if role-based logins exist) */}
         <Route
           path="/login"
           element={
@@ -42,7 +51,7 @@ export default function App() {
           }
         />
 
-        {/* Student Login */}
+        {/* Student Login → Dashboard */}
         <Route
           path="/login/student"
           element={
@@ -53,8 +62,18 @@ export default function App() {
             )
           }
         />
+        <Route
+          path="/dashboard/student"
+          element={
+            user?.role === "student" ? (
+              <StudentDashboard onLogout={handleLogout} />
+            ) : (
+              <Navigate to="/login/student" replace />
+            )
+          }
+        />
 
-        {/* Teacher Login */}
+        {/* Teacher Login → Dashboard */}
         <Route
           path="/login/teacher"
           element={
@@ -65,42 +84,30 @@ export default function App() {
             )
           }
         />
-
-        {/* Student Dashboard (Protected) */}
         <Route
-            path="/dashboard/student"
-             element={
-        <PrivateRoute
-            user={user}
-          role="student"
-           component={() => <StudentDashboard onLogout={handleLogout} />}
-          />
-       }
+          path="/dashboard/teacher"
+          element={
+            user?.role === "teacher" ? (
+              <TeacherDashboard onLogout={handleLogout} />
+            ) : (
+              <Navigate to="/login/teacher" replace />
+            )
+          }
         />
 
+        {/* Admin Login → Dashboard */}
         <Route
-            path="/dashboard/teacher"
-            element={
-        <PrivateRoute
-            user={user}
-            role="teacher"
-           component={() => <TeacherDashboard onLogout={handleLogout} />}
-          />
-       }
+          path="/dashboard/admin"
+          element={
+            user?.role === "admin" && user?.email === "bhanuprakashmdpl@gmail.com" ? (
+              <AdminDashboard onLogout={handleLogout} />
+            ) : (
+              <Navigate to="/login" replace />
+            )
+          }
         />
 
-        <Route
-            path="/dashboard/admin"
-            element={
-        <PrivateRoute
-            user={user}
-           role="admin"
-           component={() => <AdminDashboard onLogout={handleLogout} />}
-         />
-       }
-        />
-
-        {/* Catch-all Redirect */}
+        {/* Catch-all */}
         <Route path="*" element={<Navigate to="/" replace />} />
       </Routes>
     </Router>
