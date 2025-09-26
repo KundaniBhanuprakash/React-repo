@@ -10,12 +10,62 @@ import StudentDashboard from "./pages/StudentDashboard";
 import TeacherDashboard from "./pages/TeacherDashboard";
 import AdminDashboard from "./pages/AdminDashboard";
 import Logout from "./components/Logout";
+import api from "./api/api"; // axios instance
 
 export default function App() {
   const [user, setUser] = useState(null);
 
   // Login handler
-  const handleLogin = ({ email, role }) => setUser({ email, role });
+  const handleLogin = async (loginData) => {
+    try {
+      // loginData = { email, password, role } depending on login component
+      const res = await api.post("/auth/login", {
+        email: loginData.email,
+        password: loginData.password,
+      });
+
+      if (!res.data.success) {
+        alert("Login failed: " + res.data.message);
+        return;
+      }
+
+      const loggedInUser = {
+        email: res.data.email,
+        role: res.data.role,
+        _id: res.data._id,
+        name: res.data.name,
+        profilePic: res.data.profilePic || "",
+        phone: res.data.phone || "",
+      };
+
+      let studentProfile = null;
+
+      // If student, create/fetch student profile
+      if (loggedInUser.role === "student") {
+        try {
+          const studentRes = await api.post("/student/create", {
+            userId: loggedInUser._id,
+            name: loggedInUser.name,
+            email: loggedInUser.email,
+            profilePic: loggedInUser.profilePic,
+            phone: loggedInUser.phone,
+          });
+
+          studentProfile = studentRes.data;
+        } catch (err) {
+          console.error("Failed to create student profile:", err);
+          alert("Failed to create student profile");
+          return;
+        }
+      }
+
+      // Save user with optional studentProfile
+      setUser({ ...loggedInUser, studentProfile });
+    } catch (err) {
+      console.error("Login error:", err);
+      alert("Login error");
+    }
+  };
 
   // Logout handler
   const handleLogout = () => setUser(null);
@@ -33,11 +83,7 @@ export default function App() {
         <Route
           path="/login"
           element={
-            user ? (
-              <Navigate to={`/dashboard/${user.role}`} replace />
-            ) : (
-              <Login onLogin={handleLogin} />
-            )
+            user ? <Navigate to={`/dashboard/${user.role}`} replace /> : <Login onLogin={handleLogin} />
           }
         />
 
@@ -45,22 +91,15 @@ export default function App() {
         <Route
           path="/login/student"
           element={
-            user ? (
-              <Navigate to="/dashboard/student" replace />
-            ) : (
-              <StudentLogin onLogin={handleLogin} />
-            )
+            user ? <Navigate to="/dashboard/student" replace /> : <StudentLogin onLogin={handleLogin} />
           }
         />
+
         {/* Teacher Login */}
         <Route
           path="/login/teacher"
           element={
-            user ? (
-              <Navigate to="/dashboard/teacher" replace />
-            ) : (
-              <TeacherLogin onLogin={handleLogin} />
-            )
+            user ? <Navigate to="/dashboard/teacher" replace /> : <TeacherLogin onLogin={handleLogin} />
           }
         />
 
@@ -73,7 +112,7 @@ export default function App() {
                 <div className="flex justify-end p-4 bg-indigo-100">
                   <Logout onLogout={handleLogout} />
                 </div>
-                <StudentDashboard />
+                <StudentDashboard studentProfile={user.studentProfile} />
               </div>
             ) : (
               <Navigate to="/login/student" replace />

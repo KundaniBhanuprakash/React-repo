@@ -1,19 +1,21 @@
+// src/pages/StudentLogin.jsx
 import React, { useState } from "react";
-import { useNavigate } from "react-router-dom";
 
 export default function StudentLogin({ onLogin }) {
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
-  const navigate = useNavigate();
 
-  const handleSubmit = (e) => {
+  const handleSubmit = async (e) => {
     e.preventDefault();
 
-    // ✅ Mock validation (replace with backend call)
-    if (email && password) {
-      onLogin({ email, role: "student" });
-      navigate("/dashboard/student"); // 🚀 go to student dashboard
+    if (!email || !password) {
+      alert("Please enter email and password");
+      return;
     }
+
+    // Call centralized login handler in App.jsx
+    await onLogin({ email, password, role: "student" });
+    // Navigation is handled by App.jsx based on user state
   };
 
   return (
@@ -49,3 +51,5 @@ export default function StudentLogin({ onLogin }) {
     </div>
   );
 }
+
+

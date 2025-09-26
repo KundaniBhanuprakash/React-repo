@@ -1,19 +1,21 @@
+// src/pages/TeacherLogin.jsx
 import React, { useState } from "react";
-import { useNavigate } from "react-router-dom";
 
 export default function TeacherLogin({ onLogin }) {
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
-  const navigate = useNavigate();
 
-  const handleSubmit = (e) => {
+  const handleSubmit = async (e) => {
     e.preventDefault();
 
-    // ✅ Mock validation (replace with backend call)
-    if (email && password) {
-      onLogin({ email, role: "teacher" });
-      navigate("/dashboard/teacher"); // 🚀 go to teacher dashboard
+    if (!email || !password) {
+      alert("Please enter email and password");
+      return;
     }
+
+    // Call centralized login handler in App.jsx
+    await onLogin({ email, password, role: "teacher" });
+    // Navigation is handled by App.jsx based on user state
   };
 
   return (
