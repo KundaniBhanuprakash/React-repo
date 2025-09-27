@@ -3,6 +3,7 @@ import { BrowserRouter as Router, Routes, Route, Navigate } from "react-router-d
 
 import Landing from "./pages/Landing";
 import RoleSelection from "./pages/RoleSelection";
+import Signup from "./pages/Signup";
 import Login from "./pages/Login";
 import StudentLogin from "./pages/StudentLogin";
 import TeacherLogin from "./pages/TeacherLogin";
@@ -18,7 +19,6 @@ export default function App() {
   // Login handler
   const handleLogin = async (loginData) => {
     try {
-      // loginData = { email, password, role } depending on login component
       const res = await api.post("/auth/login", {
         email: loginData.email,
         password: loginData.password,
@@ -38,6 +38,12 @@ export default function App() {
         phone: res.data.phone || "",
       };
 
+      // Admin access check
+      if (loggedInUser.role === "admin" && loggedInUser.email !== "bhanuprakashmdpl@gmail.com") {
+        alert("Unauthorized admin access");
+        return;
+      }
+
       let studentProfile = null;
 
       // If student, create/fetch student profile
@@ -50,7 +56,6 @@ export default function App() {
             profilePic: loggedInUser.profilePic,
             phone: loggedInUser.phone,
           });
-
           studentProfile = studentRes.data;
         } catch (err) {
           console.error("Failed to create student profile:", err);
@@ -59,7 +64,6 @@ export default function App() {
         }
       }
 
-      // Save user with optional studentProfile
       setUser({ ...loggedInUser, studentProfile });
     } catch (err) {
       console.error("Login error:", err);
@@ -78,6 +82,9 @@ export default function App() {
 
         {/* Role Selection */}
         <Route path="/select-role" element={<RoleSelection />} />
+
+        {/* Signup */}
+        <Route path="/signup" element={<Signup />} />
 
         {/* Generic Login */}
         <Route
@@ -103,7 +110,7 @@ export default function App() {
           }
         />
 
-        {/* Student Dashboard */}
+        {/* Dashboards */}
         <Route
           path="/dashboard/student"
           element={
@@ -120,7 +127,6 @@ export default function App() {
           }
         />
 
-        {/* Teacher Dashboard */}
         <Route
           path="/dashboard/teacher"
           element={
@@ -137,7 +143,6 @@ export default function App() {
           }
         />
 
-        {/* Admin Dashboard */}
         <Route
           path="/dashboard/admin"
           element={
@@ -154,7 +159,7 @@ export default function App() {
           }
         />
 
-        {/* Catch-all Redirect */}
+        {/* Catch-all redirect */}
         <Route path="*" element={<Navigate to="/" replace />} />
       </Routes>
     </Router>

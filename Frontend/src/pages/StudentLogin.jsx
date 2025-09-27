@@ -1,55 +1,71 @@
-// src/pages/StudentLogin.jsx
 import React, { useState } from "react";
+import axios from "axios";
 
-export default function StudentLogin({ onLogin }) {
+export default function Login({ onLogin }) {
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
+  const [error, setError] = useState("");
 
   const handleSubmit = async (e) => {
     e.preventDefault();
+    setError("");
 
-    if (!email || !password) {
-      alert("Please enter email and password");
-      return;
+    try {
+      const res = await axios.post("http://localhost:5000/api/auth/login", {
+        email,
+        password,
+      });
+
+      onLogin(res.data); // send token + user back to App
+    } catch (err) {
+      setError(err.response?.data?.error || "Login failed");
     }
-
-    // Call centralized login handler in App.jsx
-    await onLogin({ email, password, role: "student" });
-    // Navigation is handled by App.jsx based on user state
   };
 
   return (
-    <div className="flex items-center justify-center min-h-screen bg-gray-50">
-      <form
-        onSubmit={handleSubmit}
-        className="bg-white p-8 rounded-xl shadow-md w-96"
-      >
-        <h2 className="text-2xl font-bold text-indigo-600 mb-6 text-center">
-          Student Login
-        </h2>
-        <input
-          type="email"
-          placeholder="Email"
-          className="w-full p-3 mb-4 border rounded-lg"
-          value={email}
-          onChange={(e) => setEmail(e.target.value)}
-        />
-        <input
-          type="password"
-          placeholder="Password"
-          className="w-full p-3 mb-4 border rounded-lg"
-          value={password}
-          onChange={(e) => setPassword(e.target.value)}
-        />
-        <button
-          type="submit"
-          className="w-full bg-indigo-600 text-white py-3 rounded-lg hover:bg-indigo-700"
-        >
+    <div className="flex min-h-screen items-center justify-center bg-gradient-to-br from-indigo-100 to-purple-200">
+      <div className="bg-white p-8 rounded-2xl shadow-xl w-full max-w-md">
+        <h2 className="text-3xl font-bold text-center text-indigo-600 mb-6">
           Login
-        </button>
-      </form>
+        </h2>
+
+        {error && (
+          <p className="mb-4 text-red-600 text-center font-medium">{error}</p>
+        )}
+
+        <form onSubmit={handleSubmit} className="space-y-5">
+          <div>
+            <label className="block text-gray-700 font-medium">Email</label>
+            <input
+              type="email"
+              className="w-full mt-2 px-4 py-2 border rounded-xl focus:outline-none focus:ring-2 focus:ring-indigo-400"
+              placeholder="you@example.com"
+              value={email}
+              onChange={(e) => setEmail(e.target.value)}
+              required
+            />
+          </div>
+
+          <div>
+            <label className="block text-gray-700 font-medium">Password</label>
+            <input
+              type="password"
+              className="w-full mt-2 px-4 py-2 border rounded-xl focus:outline-none focus:ring-2 focus:ring-indigo-400"
+              placeholder="••••••••"
+              value={password}
+              onChange={(e) => setPassword(e.target.value)}
+              required
+            />
+          </div>
+
+          <button
+            type="submit"
+            className="w-full bg-indigo-600 hover:bg-indigo-700 text-white py-2 rounded-xl font-semibold transition"
+          >
+            Login
+          </button>
+        </form>
+      </div>
     </div>
   );
 }
-
-
