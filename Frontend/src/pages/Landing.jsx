@@ -16,20 +16,12 @@ export default function Landing() {
             <li><a href="#institute" className="hover:text-indigo-600">Institute</a></li>
             <li><a href="#contact" className="hover:text-indigo-600">Contact</a></li>
           </ul>
-          <div className="space-x-4">
-            <button
-              onClick={() => navigate("/Login")}
-              className="px-5 py-2 bg-indigo-600 text-white rounded-lg shadow hover:bg-indigo-700 transition"
-            >
-              Login
-            </button>
-            <button
-              onClick={() => navigate("/Signup")}
-              className="px-5 py-2 bg-green-600 text-white rounded-lg shadow hover:bg-green-700 transition"
-            >
-              Sign Up
-            </button>
-          </div>
+          <button
+            onClick={() => navigate("/select-role")}
+            className="px-5 py-2 bg-indigo-600 text-white rounded-lg shadow hover:bg-indigo-700 transition"
+          >
+            Login
+          </button>
         </div>
       </nav>
 
