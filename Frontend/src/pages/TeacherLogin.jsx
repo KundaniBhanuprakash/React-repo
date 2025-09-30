@@ -1,4 +1,3 @@
-// src/pages/TeacherLogin.jsx
 import React, { useState } from "react";
 
 export default function TeacherLogin({ onLogin }) {
@@ -15,7 +14,6 @@ export default function TeacherLogin({ onLogin }) {
 
     // Call centralized login handler in App.jsx
     await onLogin({ email, password, role: "teacher" });
-    // Navigation is handled by App.jsx based on user state
   };
 
   return (

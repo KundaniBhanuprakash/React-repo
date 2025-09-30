@@ -16,13 +16,10 @@ import api from "./api/api"; // axios instance
 export default function App() {
   const [user, setUser] = useState(null);
 
-  // Login handler
-  const handleLogin = async (loginData) => {
+  // ✅ Centralized Login Handler
+  const handleLogin = async ({ email, password }) => {
     try {
-      const res = await api.post("/auth/login", {
-        email: loginData.email,
-        password: loginData.password,
-      });
+      const res = await api.post("/auth/login", { email, password });
 
       if (!res.data.success) {
         alert("Login failed: " + res.data.message);
@@ -38,15 +35,16 @@ export default function App() {
         phone: res.data.phone || "",
       };
 
-      // Admin access check
-      if (loggedInUser.role === "admin" && loggedInUser.email !== "bhanuprakashmdpl@gmail.com") {
+      // Admin restriction
+      if (
+        loggedInUser.role === "admin" &&
+        loggedInUser.email !== "bhanuprakashmdpl@gmail.com"
+      ) {
         alert("Unauthorized admin access");
         return;
       }
 
       let studentProfile = null;
-
-      // If student, create/fetch student profile
       if (loggedInUser.role === "student") {
         try {
           const studentRes = await api.post("/student/create", {
@@ -59,25 +57,22 @@ export default function App() {
           studentProfile = studentRes.data;
         } catch (err) {
           console.error("Failed to create student profile:", err);
-          alert("Failed to create student profile");
-          return;
         }
       }
 
       setUser({ ...loggedInUser, studentProfile });
     } catch (err) {
       console.error("Login error:", err);
-      alert("Login error");
+      alert("Login error, please try again.");
     }
   };
 
-  // Logout handler
   const handleLogout = () => setUser(null);
 
   return (
     <Router>
       <Routes>
-        {/* Landing Page */}
+        {/* Landing */}
         <Route path="/" element={<Landing />} />
 
         {/* Role Selection */}
@@ -90,7 +85,11 @@ export default function App() {
         <Route
           path="/login"
           element={
-            user ? <Navigate to={`/dashboard/${user.role}`} replace /> : <Login onLogin={handleLogin} />
+            user ? (
+              <Navigate to={`/dashboard/${user.role}`} replace />
+            ) : (
+              <Login onLogin={handleLogin} />
+            )
           }
         />
 
@@ -98,7 +97,11 @@ export default function App() {
         <Route
           path="/login/student"
           element={
-            user ? <Navigate to="/dashboard/student" replace /> : <StudentLogin onLogin={handleLogin} />
+            user ? (
+              <Navigate to="/dashboard/student" replace />
+            ) : (
+              <StudentLogin onLogin={handleLogin} />
+            )
           }
         />
 
@@ -106,11 +109,15 @@ export default function App() {
         <Route
           path="/login/teacher"
           element={
-            user ? <Navigate to="/dashboard/teacher" replace /> : <TeacherLogin onLogin={handleLogin} />
+            user ? (
+              <Navigate to="/dashboard/teacher" replace />
+            ) : (
+              <TeacherLogin onLogin={handleLogin} />
+            )
           }
         />
 
-        {/* Dashboards */}
+        {/* Student Dashboard */}
         <Route
           path="/dashboard/student"
           element={
@@ -127,6 +134,7 @@ export default function App() {
           }
         />
 
+        {/* Teacher Dashboard */}
         <Route
           path="/dashboard/teacher"
           element={
@@ -143,10 +151,12 @@ export default function App() {
           }
         />
 
+        {/* Admin Dashboard */}
         <Route
           path="/dashboard/admin"
           element={
-            user?.role === "admin" && user?.email === "bhanuprakashmdpl@gmail.com" ? (
+            user?.role === "admin" &&
+            user?.email === "bhanuprakashmdpl@gmail.com" ? (
               <div className="min-h-screen flex flex-col">
                 <div className="flex justify-end p-4 bg-gray-100">
                   <Logout onLogout={handleLogout} />
@@ -159,7 +169,7 @@ export default function App() {
           }
         />
 
-        {/* Catch-all redirect */}
+        {/* Catch-all */}
         <Route path="*" element={<Navigate to="/" replace />} />
       </Routes>
     </Router>
