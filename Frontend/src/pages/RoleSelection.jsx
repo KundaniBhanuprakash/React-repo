@@ -10,12 +10,12 @@ export default function RoleSelection() {
   useEffect(() => {
     const checkAdmin = async () => {
       try {
-        const res = await axios.get("/auth/current-user");
-        if (res.data.role === "admin") {
+        const res = await axios.get("/auth/current-user"); // backend check
+        if (res.data?.role === "admin") {
           setRoles(["student", "teacher", "admin"]);
         }
       } catch (err) {
-        console.error(err);
+        console.warn("No backend detected, defaulting roles.");
       } finally {
         setLoading(false);
       }
@@ -23,7 +23,10 @@ export default function RoleSelection() {
     checkAdmin();
   }, []);
 
-  const handleRoleClick = (role) => navigate(`/login/${role}`);
+  const handleRoleClick = (role) => {
+    if (role === "admin") navigate("/login"); // admin has general login
+    else navigate(`/login/${role}`);
+  };
 
   if (loading) return <div className="text-center py-20">Loading...</div>;
 
@@ -31,7 +34,6 @@ export default function RoleSelection() {
     <div className="min-h-screen flex flex-col items-center bg-gray-50 py-20">
       <h2 className="text-3xl font-bold text-gray-800 mb-12">Select Your Role</h2>
 
-      {/* Dynamic grid based on roles length */}
       <div
         className={`grid gap-8 px-6 w-full max-w-6xl 
           ${roles.length === 1 ? "grid-cols-1 place-items-center" : ""}

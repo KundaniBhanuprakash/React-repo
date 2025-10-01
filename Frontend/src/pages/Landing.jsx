@@ -16,12 +16,21 @@ export default function Landing() {
             <li><a href="#institute" className="hover:text-indigo-600">Institute</a></li>
             <li><a href="#contact" className="hover:text-indigo-600">Contact</a></li>
           </ul>
-          <button
-            onClick={() => navigate("/select-role")}
-            className="px-5 py-2 bg-indigo-600 text-white rounded-lg shadow hover:bg-indigo-700 transition"
-          >
-            Login
-          </button>
+
+          <div className="flex space-x-4">
+            <button
+              onClick={() => navigate("/select-role")}
+              className="px-5 py-2 bg-indigo-600 text-white rounded-lg shadow hover:bg-indigo-700 transition"
+            >
+              Login
+            </button>
+            <button
+              onClick={() => navigate("/signup")}
+              className="px-5 py-2 bg-green-600 text-white rounded-lg shadow hover:bg-green-700 transition"
+            >
+              Signup
+            </button>
+          </div>
         </div>
       </nav>
 
@@ -46,26 +55,38 @@ export default function Landing() {
         </div>
       </section>
 
-      {/* Features Section */}
-      <section className="py-16 px-6 bg-gray-50" id="features">
-        <div className="max-w-6xl mx-auto">
-          <h3 className="text-2xl font-bold text-center text-gray-800 mb-12">Key Features</h3>
-          <div className="grid md:grid-cols-3 gap-8 text-center">
-            <div className="p-6 bg-white rounded-2xl shadow">
-              <h4 className="font-bold text-indigo-600 mb-2">Interactive Courses</h4>
-              <p className="text-gray-600">Enroll and learn with structured lessons and resources.</p>
-            </div>
-            <div className="p-6 bg-white rounded-2xl shadow">
-              <h4 className="font-bold text-green-600 mb-2">Assignments & Quizzes</h4>
-              <p className="text-gray-600">Track your progress with engaging quizzes and assignments.</p>
-            </div>
-            <div className="p-6 bg-white rounded-2xl shadow">
-              <h4 className="font-bold text-purple-600 mb-2">Certificates</h4>
-              <p className="text-gray-600">Get certified for your efforts and showcase your skills.</p>
-            </div>
-          </div>
-        </div>
-      </section>
+     
+      {/* Features */}
+<section className="py-16 px-6 bg-gray-50" id="features">
+  <div className="max-w-6xl mx-auto">
+    <h3 className="text-2xl font-bold text-center text-gray-800 mb-12">
+      Key Features
+    </h3>
+    <div className="grid md:grid-cols-3 gap-8 text-center">
+      <div className="p-6 bg-white rounded-2xl shadow 
+        transition-transform transform hover:-translate-y-2 hover:shadow-xl">
+        <h4 className="font-bold text-indigo-600 mb-2">Interactive Courses</h4>
+        <p className="text-gray-600">
+          Enroll and learn with structured lessons and resources.
+        </p>
+      </div>
+      <div className="p-6 bg-white rounded-2xl shadow 
+        transition-transform transform hover:-translate-y-2 hover:shadow-xl">
+        <h4 className="font-bold text-green-600 mb-2">Assignments & Quizzes</h4>
+        <p className="text-gray-600">
+          Track your progress with engaging quizzes and assignments.
+        </p>
+      </div>
+      <div className="p-6 bg-white rounded-2xl shadow 
+        transition-transform transform hover:-translate-y-2 hover:shadow-xl">
+        <h4 className="font-bold text-purple-600 mb-2">Certificates</h4>
+        <p className="text-gray-600">
+          Get certified for your efforts and showcase your skills.
+        </p>
+      </div>
+    </div>
+  </div>
+</section>
 
       {/* Institute Section */}
       <section className="py-16 px-6 bg-white" id="institute">
