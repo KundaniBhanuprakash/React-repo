@@ -1,5 +1,5 @@
 import React, { useEffect, useState } from "react";
-import axios from "../api/api";
+import axios from "../api/api"; // Assuming correct path
 
 export default function TeacherDashboard() {
   const [courses, setCourses] = useState([]);
@@ -8,7 +8,8 @@ export default function TeacherDashboard() {
   useEffect(() => {
     const fetchCourses = async () => {
       try {
-        const res = await axios.get("/teacher/courses");
+        // Simulating API call for teacher's courses
+        const res = await axios.get("/teacher/courses"); 
         setCourses(res.data);
       } catch (err) {
         console.error("Error fetching teacher courses:", err);
@@ -21,8 +22,10 @@ export default function TeacherDashboard() {
 
   if (loading) {
     return (
-      <div className="p-10 text-center text-gray-500 text-lg animate-pulse">
-        Loading dashboard...
+      <div className="min-h-screen flex items-center justify-center bg-gray-50">
+        <div className="p-10 text-center text-gray-500 text-xl animate-pulse">
+          Loading personalized dashboard...
+        </div>
       </div>
     );
   }
@@ -31,130 +34,187 @@ export default function TeacherDashboard() {
     (acc, course) => acc + course.students.length,
     0
   );
+  
+  const pendingAssignmentsCount = Math.floor(Math.random() * 10); // Placeholder
 
   return (
-    <div className="max-w-7xl mx-auto p-6 space-y-12">
-      {/* Header */}
-      <h1 className="text-4xl font-extrabold mb-6 text-transparent bg-clip-text bg-gradient-to-r from-blue-500 to-purple-600">
-        Teacher Dashboard
-      </h1>
-
-      {/* Stats Overview */}
-      <div className="grid grid-cols-1 sm:grid-cols-3 gap-6">
-        <div className="bg-white p-6 rounded-2xl shadow hover:shadow-lg transition">
-          <h3 className="text-gray-500 font-medium">Total Courses</h3>
-          <p className="text-3xl font-bold text-indigo-600">{courses.length}</p>
-        </div>
-        <div className="bg-white p-6 rounded-2xl shadow hover:shadow-lg transition">
-          <h3 className="text-gray-500 font-medium">Total Students</h3>
-          <p className="text-3xl font-bold text-green-600">{totalStudents}</p>
-        </div>
-        <div className="bg-white p-6 rounded-2xl shadow hover:shadow-lg transition">
-          <h3 className="text-gray-500 font-medium">Pending Assignments</h3>
-          <p className="text-3xl font-bold text-red-600">
-            {/* Placeholder - backend pending assignments count */}
-            {Math.floor(Math.random() * 10)}
-          </p>
+    <div className="max-w-7xl mx-auto p-6 lg:p-10 space-y-12 bg-gray-50 min-h-screen">
+      
+      {/* Header and Welcome */}
+      <div className="flex justify-between items-center border-b pb-4">
+        <h1 className="text-4xl font-extrabold text-gray-900">
+          Teacher Dashboard 👋
+        </h1>
+        <div className="flex items-center space-x-3">
+            <span className="text-sm font-medium text-gray-500 hidden sm:block">Welcome back!</span>
+            {/*  - Placeholder for profile image */}
+            <div className="w-10 h-10 bg-blue-200 rounded-full flex items-center justify-center text-blue-800 font-bold">T</div>
         </div>
       </div>
 
-      {/* Quick Actions */}
-      <div className="bg-white p-6 rounded-2xl shadow space-y-4">
-        <h2 className="text-2xl font-bold mb-4">Quick Actions</h2>
-        <div className="flex flex-wrap gap-4">
-          <button className="px-4 py-2 bg-indigo-500 text-white rounded-lg shadow hover:bg-indigo-600">
-            + Create New Course
-          </button>
-          <button className="px-4 py-2 bg-green-500 text-white rounded-lg shadow hover:bg-green-600">
-            Grade Assignments
-          </button>
-          <button className="px-4 py-2 bg-yellow-500 text-white rounded-lg shadow hover:bg-yellow-600">
-            Post Announcement
-          </button>
-        </div>
-      </div>
-
-      {/* Courses Section */}
-      <div>
-        <h2 className="text-2xl font-bold mb-4">My Courses</h2>
-        {courses.length === 0 ? (
-          <p className="text-gray-600 text-lg">
-            You are not assigned to any courses yet.
-          </p>
-        ) : (
-          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
-            {courses.map((course) => (
-              <div
-                key={course._id}
-                className="bg-white rounded-3xl shadow-lg p-6 border border-gray-200 hover:shadow-2xl transition-shadow duration-300"
-              >
-                <h2 className="text-2xl font-bold mb-2 text-gray-800">
-                  {course.title}
-                </h2>
-                <p className="text-gray-500 mb-4">{course.description}</p>
-
-                <div className="flex justify-between items-center mb-3">
-                  <h3 className="font-medium text-gray-700">
-                    Enrolled Students
-                  </h3>
-                  <span className="bg-blue-100 text-blue-800 px-3 py-1 rounded-full text-sm font-semibold">
-                    {course.students.length}
-                  </span>
-                </div>
-
-                {course.students.length === 0 ? (
-                  <p className="text-sm text-gray-500">
-                    No students enrolled yet.
-                  </p>
-                ) : (
-                  <ul className="space-y-2 max-h-40 overflow-y-auto pr-1">
-                    {course.students.map((student) => (
-                      <li
-                        key={student._id}
-                        className="flex justify-between items-center bg-gray-50 px-3 py-2 rounded hover:bg-gray-100 transition-colors"
-                      >
-                        <span className="truncate">
-                          {student.name} ({student.email})
-                        </span>
-                        <button
-                          onClick={() =>
-                            alert(`Remove ${student.name} from ${course.title}`)
-                          }
-                          className="text-red-500 hover:text-red-700 font-medium text-sm"
-                        >
-                          Remove
-                        </button>
-                      </li>
-                    ))}
-                  </ul>
-                )}
-              </div>
-            ))}
-          </div>
-        )}
-      </div>
-
-      {/* Announcements */}
-      <div className="bg-white p-6 rounded-2xl shadow space-y-4">
-        <h2 className="text-2xl font-bold">Announcements</h2>
-        <textarea
-          placeholder="Write an announcement..."
-          className="w-full border border-gray-300 rounded-lg p-3 focus:ring-2 focus:ring-indigo-400"
+      {/* Stats Overview - Grid layout with more emphasis */}
+      <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6">
+        <StatCard 
+          label="Total Courses" 
+          value={courses.length} 
+          icon="📚"
+          color="indigo"
         />
-        <button className="px-4 py-2 bg-indigo-500 text-white rounded-lg shadow hover:bg-indigo-600">
-          Post
-        </button>
+        <StatCard 
+          label="Total Students" 
+          value={totalStudents} 
+          icon="👥"
+          color="green"
+        />
+        <StatCard 
+          label="Pending Grading" 
+          value={pendingAssignmentsCount} 
+          icon="⚠️"
+          color="red"
+        />
       </div>
 
-      {/* Activity Feed */}
-      <div className="bg-white p-6 rounded-2xl shadow">
-        <h2 className="text-2xl font-bold mb-4">Recent Activity</h2>
-        <ul className="space-y-3">
-          <li className="text-gray-600">Student A submitted Quiz 1</li>
-          <li className="text-gray-600">Student B enrolled in Physics</li>
-          <li className="text-gray-600">Assignment 2 deadline updated</li>
-        </ul>
+      {/* Layout: Courses on the left, Actions/Announcements on the right */}
+      <div className="grid grid-cols-1 lg:grid-cols-3 gap-8">
+        
+        {/* Main Content (My Courses) */}
+        <div className="lg:col-span-2 space-y-8">
+          <h2 className="text-3xl font-bold text-gray-800">My Courses</h2>
+          {courses.length === 0 ? (
+            <div className="bg-white p-6 rounded-2xl shadow border border-dashed border-gray-300">
+              <p className="text-gray-600 text-lg text-center">
+                You are not assigned to any courses yet.
+              </p>
+            </div>
+          ) : (
+            <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+              {courses.map((course) => (
+                <CourseCard key={course._id} course={course} />
+              ))}
+            </div>
+          )}
+        </div>
+
+        {/* Sidebar (Actions and Announcements) */}
+        <div className="lg:col-span-1 space-y-8">
+          
+          {/* Quick Actions */}
+          <QuickActions />
+
+          {/* Announcements Section */}
+          <AnnouncementsSection />
+
+          {/* Activity Feed */}
+          <ActivityFeed />
+        </div>
       </div>
     </div>
   );
 }
+
+// --- Reusable Dashboard Components ---
+
+const StatCard = ({ label, value, icon, color }) => (
+  <div className="bg-white p-6 rounded-3xl shadow-lg border border-gray-100 hover:shadow-xl transition transform hover:scale-[1.01]">
+    <div className="flex items-center space-x-4">
+        <div className={`text-3xl p-3 rounded-xl bg-${color}-100`}>
+            {icon}
+        </div>
+        <div>
+            <h3 className="text-gray-500 font-medium text-sm uppercase">{label}</h3>
+            <p className={`text-4xl font-extrabold text-${color}-600`}>{value}</p>
+        </div>
+    </div>
+  </div>
+);
+
+const CourseCard = ({ course }) => (
+    <div
+        className="bg-white rounded-3xl shadow-xl p-6 border-t-4 border-indigo-500 hover:shadow-2xl transition-shadow duration-300 space-y-4"
+    >
+        <h2 className="text-2xl font-bold text-gray-800 truncate">
+            {course.title}
+        </h2>
+        <p className="text-gray-500 text-sm line-clamp-2">{course.description}</p>
+
+        <div className="flex justify-between items-center">
+            <h3 className="font-semibold text-gray-700">Enrolled Students</h3>
+            <span className="bg-blue-100 text-blue-800 px-3 py-1 rounded-full text-sm font-semibold">
+                {course.students.length}
+            </span>
+        </div>
+
+        <button 
+            onClick={() => alert(`View details for ${course.title}`)}
+            className="w-full text-indigo-600 font-semibold py-2 border border-indigo-200 rounded-xl hover:bg-indigo-50 transition"
+        >
+            Manage Course
+        </button>
+    </div>
+);
+
+const QuickActions = () => (
+    <div className="bg-white p-6 rounded-2xl shadow-lg space-y-4 border border-gray-100">
+        <h2 className="text-2xl font-bold text-gray-800">Quick Actions</h2>
+        <div className="grid grid-cols-2 gap-3">
+          <ActionButton text="+ New Course" color="indigo" />
+          <ActionButton text="Grade Work" color="green" />
+          <ActionButton text="Post Announce" color="yellow" />
+          <ActionButton text="View Reports" color="blue" />
+        </div>
+    </div>
+);
+
+const ActionButton = ({ text, color }) => (
+    <button className={`px-4 py-3 text-sm font-semibold bg-${color}-500 text-white rounded-xl shadow hover:bg-${color}-600 transition`}>
+        {text}
+    </button>
+);
+
+const AnnouncementsSection = () => {
+    const [announcement, setAnnouncement] = useState("");
+
+    const handlePost = () => {
+        if (announcement.trim()) {
+            alert(`Posting announcement: ${announcement}`);
+            setAnnouncement("");
+        }
+    };
+
+    return (
+        <div className="bg-white p-6 rounded-2xl shadow-lg space-y-4 border border-gray-100">
+            <h2 className="text-2xl font-bold text-gray-800">Post Announcement</h2>
+            <textarea
+                placeholder="Write an announcement for your students..."
+                value={announcement}
+                onChange={(e) => setAnnouncement(e.target.value)}
+                className="w-full border border-gray-300 rounded-lg p-3 h-24 resize-none focus:ring-2 focus:ring-indigo-400 focus:border-indigo-400"
+            />
+            <button 
+                onClick={handlePost}
+                className="w-full px-4 py-2 bg-indigo-600 text-white font-semibold rounded-lg shadow hover:bg-indigo-700 transition"
+                disabled={!announcement.trim()}
+            >
+                Post Now
+            </button>
+        </div>
+    );
+};
+
+const ActivityFeed = () => (
+    <div className="bg-white p-6 rounded-2xl shadow-lg border border-gray-100">
+        <h2 className="text-2xl font-bold mb-4 text-gray-800">Recent Activity</h2>
+        <ul className="space-y-3">
+          <ActivityItem text="Student A submitted Quiz 1 in Calculus" time="5 mins ago" />
+          <ActivityItem text="Student B enrolled in Physics 101" time="2 hours ago" />
+          <ActivityItem text="Assignment 2 deadline updated by Admin" time="Yesterday" />
+        </ul>
+    </div>
+);
+
+const ActivityItem = ({ text, time }) => (
+    <li className="flex justify-between items-start text-sm border-b pb-2 last:border-b-0 text-gray-600">
+        <span className="max-w-[70%]">{text}</span>
+        <span className="text-xs font-medium text-gray-400">{time}</span>
+    </li>
+);
